@@ -35,77 +35,50 @@ SJDM=function(roads,car,packages) {
   current = list(x = currentX, y = currentY, H = currentH, G = currentG, F = currentF, prevX = 0, prevY = 0, isCheck = 0)
   openlist = list()
   closedlist = list()
-  closedlist[[length(closedlist)+1]] <- current
+  openlist[[length(openlist)+1]] <- current
 
   #print(paste("CurrentNode"))
   #print(current)
-
+  goalNode = list(x=px, y=py)
+  
   ################ get neighbours
+  closedlist = AStar(roads,openlist,closedlist,goalNode) 
+  
+  #Titta igenom closedList
+  currentNode = closedlist[[length(closedlist)]]
+  closedlist[[length(closedlist)]] = NULL
+    while(length(closedlist) > 1){
 
-  #find left
-  if(current$x != 1){
-    newX = current$x -1
-    # call getNode
-    leftNodeCoor = list(x = newX, y = current$y)
-    goalNode = list(x = px, y=py)
-    leftNode = getNewNode(leftNodeCoor, current, roads, goalNode)
-    openlist = openlistAdd(openlist, leftNode)
-    print(paste("leftNode: ", leftNode$F))
+  if(currentNode$prevX == closedlist[[length(closedlist)]]$x && currentNode$prevY == closedlist[[length(closedlist)]]$y){
+      currentNode = closedlist[[length(closedlist)]]
   } 
-
-  #find top
-  if(current$y != nrow(roads$hroads)){
-    newY = current$y + 1
-    # call getNode
-    topNodeCoor = list(x = current$x, y = newY)
-    goalNode = list(x = px, y=py)
-    topNode = getNewNode(topNodeCoor, current, roads, goalNode)
-    openlist = openlistAdd(openlist, topNode)
-    print(paste("topNode: ", topNode$F))
-  } 
-
-  #find right
-  if(current$x != ncol(roads$vroads)){
-    newX = current$x + 1
-    # call getNode
-    rightNodeCoor = list(x = newX, y = current$y)
-    goalNode = list(x = px, y=py)
-    rightNode = getNewNode(rightNodeCoor, current, roads, goalNode)
-    openlist = openlistAdd(openlist, rightNode)
-    print(paste("rightNode: ", rightNode$F))
-  } 
-
-  #find bottom
-  if(current$y != 1){
-    newY = current$y -1
-    # call getNode
-    bottomNodeCoor = list(x = current$x, y = newY)
-    goalNode = list(x = px, y=py)
-    bottomNode = getNewNode(bottomNodeCoor, current, roads, goalNode)
-    openlist = openlistAdd(openlist, bottomNode)
-    print(paste("bottomNode: ", bottomNode$F))
-  }
-
+    closedlist[[length(closedlist)]] = NULL
+      }
+  
   #print(openlist)
   #print(packages)
   #print(roads)
   #print(car)
 
   # Get witch direction we shall go
-  bestF = 10000
-  bestX = 0
-  bestY = 0
-  for (node in openlist) {
-    if(node$F < bestF){
-      bestF = node$F
-      bestX = node$x
-      bestY = node$y
-    }
-  }
+#   bestF = 10000
+#   bestX = 0
+#   bestY = 0
+#   for (node in openlist) {
+#     if(node$F < bestF){
+#       bestF = node$F
+#       bestX = node$x
+#       bestY = node$y
+#     }
+#   }
 
-  difX1 = current$x - bestX
-  difY1 = current$y - bestY
+#   difX1 = current$x - bestX
+#   difY1 = current$y - bestY
 
+  difX1 = current$x - currentNode$x
+  difY1 = current$y - currentNode$y
+  
+  
   #print(paste("x: ", bestX, "y: ", bestY))
 
   nextMove = 0
@@ -144,7 +117,7 @@ getNewNode<-function(current, parent, roads,  goal) {
   else if(difX < 0) { currentG = roads$hroads[currentY, currentX]}
   else { currentG = 0}
 
-  currentG = currentG + parent$G
+  currentG = currentG + parent$G + 1
   currentF = currentG + currentH
 
   current = list(x = currentX, y = currentY, H = currentH, G = currentG, F = currentF, prevX = parent$x, prevY = parent$y, isCheck = 0)
@@ -166,6 +139,88 @@ openlistAdd <- function(openlist, node) {
     openlist[[length(openlist)+1]] = node
   }
   return (openlist)
+}
+
+
+
+
+AStar=function(roads,openlist,closedlist,goalNode) {
+  
+  #gÂ igenom open list efter minsta F v‰rdet.
+  current = list()
+  bestF = 10000
+  for(node in openlist){
+      if(node$F < bestF){
+        bestF = node$F
+      } 
+  }
+    for(i in 1:length(openlist)){
+      node = openlist[[i]]
+      #print(node)
+      if(node$F == bestF){
+        #print(bestF)
+        #add to closedlist
+        closedlist[[length(closedlist)+1]] = node
+        #set the node with best F value to current 
+        current = node
+        #remove from openlist
+        openlist[[i]] = NULL
+        break
+      } 
+    }
+  
+  #ƒr detta mÂl?
+  #om ja, retunera closedlist, annars forts‰tt.
+  if(closedlist[[length(closedlist)]]$x == goalNode$x && closedlist[[length(closedlist)]]$y == goalNode$y){
+    return(closedlist) 
+  }
+  
+  #find left
+  if(current$x != 1){
+    newX = current$x -1
+    # call getNode
+    leftNodeCoor = list(x = newX, y = current$y)
+    # goalNode = list(x = px, y=py)
+    leftNode = getNewNode(leftNodeCoor, current, roads, goalNode)
+    openlist = openlistAdd(openlist, leftNode)
+    # print(paste("leftNode: ", leftNode$F))
+  } 
+  
+  #find top
+  if(current$y != nrow(roads$hroads)){
+    newY = current$y + 1
+    # call getNode
+    topNodeCoor = list(x = current$x, y = newY)
+    # goalNode = list(x = px, y=py)
+    topNode = getNewNode(topNodeCoor, current, roads, goalNode)
+    openlist = openlistAdd(openlist, topNode)
+    # print(paste("topNode: ", topNode$F))
+  } 
+  
+  #find right
+  if(current$x != ncol(roads$vroads)){
+    newX = current$x + 1
+    # call getNode
+    rightNodeCoor = list(x = newX, y = current$y)
+    # goalNode = list(x = px, y=py)
+    rightNode = getNewNode(rightNodeCoor, current, roads, goalNode)
+    openlist = openlistAdd(openlist, rightNode)
+    # print(paste("rightNode: ", rightNode$F))
+  } 
+  
+  #find bottom
+  if(current$y != 1){
+    newY = current$y -1
+    # call getNode
+    bottomNodeCoor = list(x = current$x, y = newY)
+    # goalNode = list(x = px, y=py)
+    bottomNode = getNewNode(bottomNodeCoor, current, roads, goalNode)
+    openlist = openlistAdd(openlist, bottomNode)
+    # print(paste("bottomNode: ", bottomNode$F))
+  }
+
+  
+  AStar(roads,openlist,closedlist,goalNode)
 }
 
 # if car -> load 0  basfall om bilens kordinater √§r m√•lkordinater then wait
