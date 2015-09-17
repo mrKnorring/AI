@@ -90,15 +90,37 @@ SJDM=function(roads,car,packages) {
   #print(packages)
   #print(roads)
   #print(car)
+
+  # Get witch direction we shall go
+  bestF = 0
+  bestX = 0
+  besty = 0
+  for (node in openlist) {
+    if(node$F > bestF){
+      bestF = node$F
+      bestX = node$x
+      bestY = node$y
+    }
+  }
+
+  difX = current$x - bestX
+  difY = current$y - bestY
+
+  nextMove = 0
+  if(difY > 0)      {nextMove = 2}
+  else if(difX > 0) {nextMove = 4}
+  else if(difY < 0) {nextMove = 8}
+  else if(difX < 0) {nextMove = 6}
+  else              {nextMove = 5}
   
-  
-  
-  if (car$load>0) {
-    print(paste("Current load:",car$load))
-    print(paste("Destination: X",packages[car$load,3],"Y",packages[car$load,4]))
-  }  
-  car$nextMove=readline("Enter next move. Valid moves are 2,4,6,8,0 (directions as on keypad) or q for quit.")
-  if (car$nextMove=="q") {stop("Game terminated on user request.")}
+#  if (car$load>0) {
+#    print(paste("Current load:",car$load))
+#    print(paste("Destination: X",packages[car$load,3],"Y",packages[car$load,4]))
+#  }  
+#  
+#  car$nextMove=readline("Enter next move. Valid moves are 2,4,6,8,0 (directions as on keypad) or q for quit.")
+  car$nextMove = nextMove
+#  if (car$nextMove=="q") {stop("Game terminated on user request.")}
   return (car)
 }
 
