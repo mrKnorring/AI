@@ -23,8 +23,8 @@ SJDM=function(roads,car,packages) {
   #print(car$mem)
   px = unlist(car$mem[1])
   py = unlist(car$mem[2])
-  print(paste("GoalNode"))
-  print(paste("x1:", px, "y1: ", py))
+  #print(paste("GoalNode"))
+  #print(paste("x1:", px, "y1: ", py))
   
   currentX = car$x
   currentY = car$y
@@ -48,9 +48,8 @@ SJDM=function(roads,car,packages) {
     leftNodeCoor = list(x = newX, y = current$y)
     goalNode = list(x = px, y=py)
     leftNode = getNewNode(leftNodeCoor, current, roads, goalNode)
-    #print(paste("leftNode"))
-    #print(leftNode)
-  }
+    print(paste("leftNode: ", leftNode$G))
+  } 
 
   #find top
   if(current$y != nrow(roads$hroads)){
@@ -59,9 +58,8 @@ SJDM=function(roads,car,packages) {
     topNodeCoor = list(x = current$x, y = newY)
     goalNode = list(x = px, y=py)
     topNode = getNewNode(topNodeCoor, current, roads, goalNode)
-    #print(paste("TopNode"))
-    #print(topNode)
-  }
+    print(paste("topNode: ", topNode$G))
+  } 
 
   #find right
   if(current$x != ncol(roads$vroads)){
@@ -70,15 +68,19 @@ SJDM=function(roads,car,packages) {
     rightNodeCoor = list(x = newX, y = current$y)
     goalNode = list(x = px, y=py)
     rightNode = getNewNode(rightNodeCoor, current, roads, goalNode)
-    print(paste("rightNode"))
-    print(rightNode)
-  }
+    print(paste("rightNode: ", rightNode$G))
+  } 
 
   #find bottom
   if(current$y != 1){
     newY = current$y -1
     # call getNode
+    bottomNodeCoor = list(x = current$x, y = newY)
+    goalNode = list(x = px, y=py)
+    bottomNode = getNewNode(bottomNodeCoor, current, roads, goalNode)
+    print(paste("bottomNode: ", bottomNode$G))
   }
+
 
 #  index = length(closedlist)
 #  if(index == 0){
@@ -95,7 +97,7 @@ SJDM=function(roads,car,packages) {
 
 
   #print(packages)
-  print(roads)
+  #print(roads)
   #print(car)
   
   
@@ -119,10 +121,10 @@ getNewNode<-function(current, parent, roads,  goal) {
   difX = currentX - parent$x
   difY = currentY - parent$y
 
-  if(difX > 0)      {currentG = roads$hroads[parent$x, parent$y]} 
-  else if(difY > 0) { currentG = roads$vroads[parent$x, parent$y]}
-  else if(difY < 0) { currentG = roads$vroads[currentX, currentY]}
-  else if(difX < 0) { currentG = roads$hroads[currentX, currentY]}
+  if(difX > 0)      {currentG = roads$hroads[parent$y, parent$x]} 
+  else if(difY > 0) { currentG = roads$vroads[parent$y, parent$x]}
+  else if(difY < 0) { currentG = roads$vroads[currentY, currentX]}
+  else if(difX < 0) { currentG = roads$hroads[currentY, currentX]}
   else { currentG = 0}
 
   currentG = currentG + parent$G
