@@ -36,8 +36,8 @@ SJDM=function(roads,car,packages) {
   openlist = list()
   closedlist = list()
   
-  print(paste("CurrentNode"))
-  print(current)
+  #print(paste("CurrentNode"))
+  #print(current)
 
   ################ get neighbours
 
@@ -45,6 +45,11 @@ SJDM=function(roads,car,packages) {
   if(current$x != 1){
     newX = current$x -1
     # call getNode
+    leftNodeCoor = list(x = newX, y = current$y)
+    goalNode = list(x = px, y=py)
+    leftNode = getNewNode(leftNodeCoor, current, roads, goalNode)
+    #print(paste("leftNode"))
+    #print(leftNode)
   }
 
   #find top
@@ -54,14 +59,19 @@ SJDM=function(roads,car,packages) {
     topNodeCoor = list(x = current$x, y = newY)
     goalNode = list(x = px, y=py)
     topNode = getNewNode(topNodeCoor, current, roads, goalNode)
-    print(paste("TopNode"))
-    print(topNode)
+    #print(paste("TopNode"))
+    #print(topNode)
   }
 
   #find right
   if(current$x != ncol(roads$vroads)){
     newX = current$x + 1
     # call getNode
+    rightNodeCoor = list(x = newX, y = current$y)
+    goalNode = list(x = px, y=py)
+    rightNode = getNewNode(rightNodeCoor, current, roads, goalNode)
+    print(paste("rightNode"))
+    print(rightNode)
   }
 
   #find bottom
@@ -106,10 +116,13 @@ getNewNode<-function(current, parent, roads,  goal) {
   difY = currentY - goal$y
   currentH = abs(difX) + abs(difY)
   
-  if(difX > 0)      {currentG = roads$vroads[parent$x, parent$y]} 
-  else if(difY > 0) { currentG = roads$hroads[parent$x, parent$y]}
-  else if(difY < 0) { currentG = roads$hroads[currentX, currentY]}
-  else if(difX < 0) { currentG = roads$vroads[currentX, currentY]}
+  difX = currentX - parent$x
+  difY = currentY - parent$y
+
+  if(difX > 0)      {currentG = roads$hroads[parent$x, parent$y]} 
+  else if(difY > 0) { currentG = roads$vroads[parent$x, parent$y]}
+  else if(difY < 0) { currentG = roads$vroads[currentX, currentY]}
+  else if(difX < 0) { currentG = roads$hroads[currentX, currentY]}
   else { currentG = 0}
 
   currentG = currentG + parent$G
