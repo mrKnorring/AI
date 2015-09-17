@@ -1,5 +1,5 @@
 SJDM=function(roads,car,packages) {
-  
+
   #store coordinates for the green packeges
   if (length(car$mem) == 0) {
     #xCoor = matrix(nrow = nrow(packages), ncol = 1)
@@ -23,8 +23,6 @@ SJDM=function(roads,car,packages) {
   #print(car$mem)
   px = unlist(car$mem[1])
   py = unlist(car$mem[2])
-  print(paste("GoalNode"))
-  print(paste("x1:", px, "y1: ", py))
   
   currentX = car$x
   currentY = car$y
@@ -39,21 +37,33 @@ SJDM=function(roads,car,packages) {
 
   #print(paste("CurrentNode"))
   #print(current)
-  goalNode = list(x=px, y=py)
+
+  if(car$load > 0){
+    goalNode = list(x = packages[car$load, 3], y=packages[car$load, 4])
+  } else{
+    goalNode = list(x=px, y=py)
+  }
+  print(paste("GoalNode"))
+  print(paste("x1:", goalNode$x, "y1: ", goalNode$y))
   
   ################ get neighbours
   closedlist = AStar(roads,openlist,closedlist,goalNode) 
   
+
+  if(length(closedlist) == 2 && car$load==0){
+    car$mem[1]=NULL
+    car$mem[1]=NULL
+  }
   #Titta igenom closedList
   currentNode = closedlist[[length(closedlist)]]
   closedlist[[length(closedlist)]] = NULL
-    while(length(closedlist) > 1){
+  while(length(closedlist) > 1){
 
-  if(currentNode$prevX == closedlist[[length(closedlist)]]$x && currentNode$prevY == closedlist[[length(closedlist)]]$y){
+    if(currentNode$prevX == closedlist[[length(closedlist)]]$x && currentNode$prevY == closedlist[[length(closedlist)]]$y){
       currentNode = closedlist[[length(closedlist)]]
-  } 
+    } 
     closedlist[[length(closedlist)]] = NULL
-      }
+  }
   
   #print(openlist)
   #print(packages)
@@ -75,10 +85,10 @@ SJDM=function(roads,car,packages) {
 #   difX1 = current$x - bestX
 #   difY1 = current$y - bestY
 
-  difX1 = current$x - currentNode$x
-  difY1 = current$y - currentNode$y
-  
-  
+difX1 = current$x - currentNode$x
+difY1 = current$y - currentNode$y
+
+
   #print(paste("x: ", bestX, "y: ", bestY))
 
   nextMove = 0
@@ -94,9 +104,9 @@ SJDM=function(roads,car,packages) {
 #  }  
 #  
 #  car$nextMove=readline("Enter next move. Valid moves are 2,4,6,8,0 (directions as on keypad) or q for quit.")
-  print(paste("Next move should be: ", nextMove))
-  car$nextMove=readline("Enter next move.")
-#  car$nextMove = nextMove
+#print(paste("Next move should be: ", nextMove))
+#car$nextMove=readline("Enter next move.")
+  car$nextMove = nextMove
   if (car$nextMove=="q") {stop("Game terminated on user request.")}
   return (car)
 }
@@ -145,17 +155,17 @@ openlistAdd <- function(openlist, node) {
 
 
 AStar=function(roads,openlist,closedlist,goalNode) {
-  
+
   #gå igenom open list efter minsta F värdet.
   current = list()
   bestF = 10000
   for(node in openlist){
-      if(node$F < bestF){
-        bestF = node$F
-      } 
+    if(node$F < bestF){
+      bestF = node$F
+    } 
   }
-    for(i in 1:length(openlist)){
-      node = openlist[[i]]
+  for(i in 1:length(openlist)){
+    node = openlist[[i]]
       #print(node)
       if(node$F == bestF){
         #print(bestF)
@@ -168,7 +178,7 @@ AStar=function(roads,openlist,closedlist,goalNode) {
         break
       } 
     }
-  
+
   #Är detta mål?
   #om ja, retunera closedlist, annars fortsätt.
   if(closedlist[[length(closedlist)]]$x == goalNode$x && closedlist[[length(closedlist)]]$y == goalNode$y){
