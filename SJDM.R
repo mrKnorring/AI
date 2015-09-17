@@ -35,7 +35,8 @@ SJDM=function(roads,car,packages) {
   current = list(x = currentX, y = currentY, H = currentH, G = currentG, F = currentF, prevX = 0, prevY = 0, isCheck = 0)
   openlist = list()
   closedlist = list()
-  
+  closedlist[[length(closedlist)+1]] <- current
+
   #print(paste("CurrentNode"))
   #print(current)
 
@@ -48,7 +49,8 @@ SJDM=function(roads,car,packages) {
     leftNodeCoor = list(x = newX, y = current$y)
     goalNode = list(x = px, y=py)
     leftNode = getNewNode(leftNodeCoor, current, roads, goalNode)
-    print(paste("leftNode: ", leftNode$G))
+    openlist = openlistAdd(openlist, leftNode)
+    #print(paste("leftNode: ", leftNode$G))
   } 
 
   #find top
@@ -58,7 +60,8 @@ SJDM=function(roads,car,packages) {
     topNodeCoor = list(x = current$x, y = newY)
     goalNode = list(x = px, y=py)
     topNode = getNewNode(topNodeCoor, current, roads, goalNode)
-    print(paste("topNode: ", topNode$G))
+    openlist = openlistAdd(openlist, topNode)
+    #print(paste("topNode: ", topNode$G))
   } 
 
   #find right
@@ -68,7 +71,8 @@ SJDM=function(roads,car,packages) {
     rightNodeCoor = list(x = newX, y = current$y)
     goalNode = list(x = px, y=py)
     rightNode = getNewNode(rightNodeCoor, current, roads, goalNode)
-    print(paste("rightNode: ", rightNode$G))
+    openlist = openlistAdd(openlist, rightNode)
+    #print(paste("rightNode: ", rightNode$G))
   } 
 
   #find bottom
@@ -78,24 +82,11 @@ SJDM=function(roads,car,packages) {
     bottomNodeCoor = list(x = current$x, y = newY)
     goalNode = list(x = px, y=py)
     bottomNode = getNewNode(bottomNodeCoor, current, roads, goalNode)
-    print(paste("bottomNode: ", bottomNode$G))
+    openlist = openlistAdd(openlist, bottomNode)
+    #print(paste("bottomNode: ", bottomNode$G))
   }
 
-
-#  index = length(closedlist)
-#  if(index == 0){
-#    closedlist[index + 1] = current
-#  } else {
-#    bool = true
-#    for (item in closedlist) {
-#      if(item$x = current$x && item$y = current$y) {bool = false}
-#    }
-#    if (bool){closedlist[index + 1] = current}
-#  }
-
-
-
-
+  print(openlist)
   #print(packages)
   #print(roads)
   #print(car)
@@ -134,6 +125,22 @@ getNewNode<-function(current, parent, roads,  goal) {
   return (current)
 }
 
+openlistAdd <- function(openlist, node) {
+  bool = 0
+  for (elem in openlist) {
+    if(elem$x == node$x && elem$y == node$y){
+      if(node$F < elem$F){
+        elem = node
+      }
+      bool = 1
+      break
+    }
+  }
+  if(bool == 0){
+    openlist[[length(openlist)+1]] = node
+  }
+  return (openlist)
+}
 
 # if car -> load 0  basfall om bilens kordinater är målkordinater then wait
 #   om grön -> hitta paket (A* alla gröna som inte har en 2a i sista kolumnen)
