@@ -23,8 +23,8 @@ SJDM=function(roads,car,packages) {
   #print(car$mem)
   px = unlist(car$mem[1])
   py = unlist(car$mem[2])
-  #print(paste("GoalNode"))
-  #print(paste("x1:", px, "y1: ", py))
+  print(paste("GoalNode"))
+  print(paste("x1:", px, "y1: ", py))
   
   currentX = car$x
   currentY = car$y
@@ -50,7 +50,7 @@ SJDM=function(roads,car,packages) {
     goalNode = list(x = px, y=py)
     leftNode = getNewNode(leftNodeCoor, current, roads, goalNode)
     openlist = openlistAdd(openlist, leftNode)
-    #print(paste("leftNode: ", leftNode$G))
+    print(paste("leftNode: ", leftNode$F))
   } 
 
   #find top
@@ -61,7 +61,7 @@ SJDM=function(roads,car,packages) {
     goalNode = list(x = px, y=py)
     topNode = getNewNode(topNodeCoor, current, roads, goalNode)
     openlist = openlistAdd(openlist, topNode)
-    #print(paste("topNode: ", topNode$G))
+    print(paste("topNode: ", topNode$F))
   } 
 
   #find right
@@ -72,7 +72,7 @@ SJDM=function(roads,car,packages) {
     goalNode = list(x = px, y=py)
     rightNode = getNewNode(rightNodeCoor, current, roads, goalNode)
     openlist = openlistAdd(openlist, rightNode)
-    #print(paste("rightNode: ", rightNode$G))
+    print(paste("rightNode: ", rightNode$F))
   } 
 
   #find bottom
@@ -83,34 +83,36 @@ SJDM=function(roads,car,packages) {
     goalNode = list(x = px, y=py)
     bottomNode = getNewNode(bottomNodeCoor, current, roads, goalNode)
     openlist = openlistAdd(openlist, bottomNode)
-    #print(paste("bottomNode: ", bottomNode$G))
+    print(paste("bottomNode: ", bottomNode$F))
   }
 
-  print(openlist)
+  #print(openlist)
   #print(packages)
   #print(roads)
   #print(car)
 
   # Get witch direction we shall go
-  bestF = 0
+  bestF = 10000
   bestX = 0
-  besty = 0
+  bestY = 0
   for (node in openlist) {
-    if(node$F > bestF){
+    if(node$F < bestF){
       bestF = node$F
       bestX = node$x
       bestY = node$y
     }
   }
 
-  difX = current$x - bestX
-  difY = current$y - bestY
+  difX1 = current$x - bestX
+  difY1 = current$y - bestY
+
+  #print(paste("x: ", bestX, "y: ", bestY))
 
   nextMove = 0
-  if(difY > 0)      {nextMove = 2}
-  else if(difX > 0) {nextMove = 4}
-  else if(difY < 0) {nextMove = 8}
-  else if(difX < 0) {nextMove = 6}
+  if(difY1 > 0)      {nextMove = 2}
+  else if(difX1 > 0) {nextMove = 4}
+  else if(difY1 < 0) {nextMove = 8}
+  else if(difX1 < 0) {nextMove = 6}
   else              {nextMove = 5}
   
 #  if (car$load>0) {
@@ -119,8 +121,10 @@ SJDM=function(roads,car,packages) {
 #  }  
 #  
 #  car$nextMove=readline("Enter next move. Valid moves are 2,4,6,8,0 (directions as on keypad) or q for quit.")
-  car$nextMove = nextMove
-#  if (car$nextMove=="q") {stop("Game terminated on user request.")}
+  print(paste("Next move should be: ", nextMove))
+  car$nextMove=readline("Enter next move.")
+#  car$nextMove = nextMove
+  if (car$nextMove=="q") {stop("Game terminated on user request.")}
   return (car)
 }
 
