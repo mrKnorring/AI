@@ -11,7 +11,7 @@ SJDM=function(roads,car,packages) {
       tmp = c(tmp, packages[i,1])
       tmp = c(tmp, packages[i,2])
     }
-    #ourPackages = list(x=xCoor, y=yCoor)
+    #ourPackages = list(x=xCoor, y=yCoor) 
     #print(tmp)
     #print("CONS")
     #print("x1:", tmp[1]$x, "y1:", tmp[1]$y)
@@ -102,8 +102,8 @@ SJDM=function(roads,car,packages) {
 getNewNode<-function(current, parent, roads,  goal) {
   currentX = current$x
   currentY = current$y
-  difX = currentX - parent$x
-  difY = currentY - parent$y
+  difX = currentX - goal$x
+  difY = currentY - goal$y
   currentH = abs(difX) + abs(difY)
   
   if(difX > 0)      {currentG = roads$vroads[parent$x, parent$y]} 
