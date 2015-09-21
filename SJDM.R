@@ -161,7 +161,7 @@ SJDM=function(roads,car,packages) {
   }
   currentX = car$x
   currentY = car$y
-  currentH = abs(currentX - px) + abs(currentY - py)
+  currentH = 4*(abs(currentX - px) + abs(currentY - py))
   currentG = 0
   currentF = currentG + currentH
 
@@ -253,7 +253,7 @@ getNewNode<-function(current, parent, roads,  goal) {
   currentY = current$y
   difX = currentX - goal$x
   difY = currentY - goal$y
-  currentH = 3*(abs(difX) + abs(difY))
+  currentH = 4*(abs(difX) + abs(difY))
   
   difX = currentX - parent$x
   difY = currentY - parent$y
