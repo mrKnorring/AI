@@ -8,6 +8,8 @@ Benchmarking=function(temp, i){
   avrageBasic=0
   avrageWins=0
   avragePr=0
+  best=10000000
+  worst=0
   while (temp < i){
     print(temp)
     set.seed(temp)
@@ -15,6 +17,8 @@ Benchmarking=function(temp, i){
     resultVector[start, 1] = result
     avrageSJ=avrageSJ+result
     set.seed(temp)
+    if (result<best){best=result}
+    else if(result>worst){worst=result}
     result2 = runDeliveryMan(carReady = basicDM, dim = 10, turns = 2000, pause = 0.1, del = 5)
     resultVector[start, 2] = result2
     avrageBasic=avrageBasic+result2
@@ -41,6 +45,12 @@ Benchmarking=function(temp, i){
   print(avrageWins/runs)
   print("% förluster")
   print(avragePr/runs)
+  
+  print("Bäst antal rundor")
+  print(best)
+  print("Värsta antalet rundor")
+  print(worst)
+  
 }
 
 BenchmarkingFast=function(temp, i){
