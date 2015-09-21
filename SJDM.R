@@ -70,6 +70,8 @@ BenchmarkingFast=function(temp, i){
     result = runDeliveryMan(carReady = SJDM, dim = 10, turns = 2000, pause = 0, del = 5)
     resultVector[start, 1] = result
     avrageSJ=avrageSJ+result
+    if (result<best){best=result}
+    else if(result>worst){worst=result}
     set.seed(temp)
     result2 = runDeliveryMan(carReady = basicDM, dim = 10, turns = 2000, pause = 0, del = 5)
     resultVector[start, 2] = result2
@@ -97,7 +99,13 @@ BenchmarkingFast=function(temp, i){
   print(avrageWins/runs)
   print("% förluster")
   print(avragePr/runs)
-}
+  
+  print("Bäst antal rundor")
+  print(best)
+  print("Värsta antalet rundor")
+  print(worst)
+  
+  }
 
 SJDM=function(roads,car,packages) {
 
