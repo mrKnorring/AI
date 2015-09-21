@@ -12,19 +12,19 @@ Benchmarking=function(temp, i){
     print(temp)
     set.seed(temp)
     result = runDeliveryMan(carReady = SJDM, dim = 10, turns = 2000, pause = 0.1, del = 5)
-    resultVector[temp, 1] = result
+    resultVector[temp-runs, 1] = result
     avrageSJ=avrageSJ+result
     set.seed(temp)
     result2 = runDeliveryMan(carReady = basicDM, dim = 10, turns = 2000, pause = 0.1, del = 5)
-    resultVector[temp, 2] = result2
+    resultVector[temp-runs, 2] = result2
     avrageBasic=avrageBasic+result2
-    resultVector[temp, 3] = result - result2
+    resultVector[temp-runs, 3] = result - result2
     avrageWins=avrageWins+(result - result2)
     if((result - result2)>0){
-      resultVector[temp, 4] = 1
+      resultVector[temp-runs, 4] = 1
       avragePr=avragePr+1
     } else{
-      resultVector[temp, 4] = 0
+      resultVector[temp-runs, 4] = 0
     }
   }
   
@@ -37,7 +37,7 @@ Benchmarking=function(temp, i){
   print(avrageBasic/runs)
   print("avrage skillnad i turer")
   print(avrageWins/runs)
-  print("% segrar")
+  print("% förluster")
   print(avragePr/runs)
 }
 
