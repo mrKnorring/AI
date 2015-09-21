@@ -1,15 +1,75 @@
+Benchmarking=function(temp, i){
+  runs=i-temp
+  resultVector = matrix(nrow = i, ncol = 4)
+  result = 0
+  result2 = 0
+  avrageSJ=0
+  avrageBasic=0
+  avrageWins=0
+  avragePr=0
+  while (temp < i){
+    temp = temp + 1 
+    print(temp)
+    set.seed(temp)
+    result = runDeliveryMan(carReady = SJDM, dim = 10, turns = 2000, pause = 0.1, del = 5)
+    resultVector[temp, 1] = result
+    avrageSJ=avrageSJ+result
+    set.seed(temp)
+    result2 = runDeliveryMan(carReady = basicDM, dim = 10, turns = 2000, pause = 0.1, del = 5)
+    resultVector[temp, 2] = result2
+    avrageBasic=avrageBasic+result2
+    resultVector[temp, 3] = result - result2
+    avrageWins=avrageWins+(result - result2)
+    if((result - result2)>0){
+      resultVector[temp, 4] = 1
+      avragePr=avragePr+1
+    } else{
+      resultVector[temp, 4] = 0
+    }
+  }
+  
+  print(resultVector)
+  
+  
+  print("avrage turns for SJ")
+  print(avrageSJ/runs)
+  print("avrage turns for Basic")
+  print(avrageBasic/runs)
+  print("avrage skillnad i turer")
+  print(avrageWins/runs)
+  print("% segrar")
+  print(avragePr/runs)
+}
+
 SJDM=function(roads,car,packages) {
 
   #store coordinates for the green packeges
-  if (length(car$mem) == 0) {
+  #if (length(car$mem) == 0) {
     #xCoor = matrix(nrow = nrow(packages), ncol = 1)
     #yCoor = matrix(nrow = nrow(packages), ncol = 1)
     tmp = list()
+    tmpBestH = 1000
+    if(car$load == 0){
     for (i in 1:nrow(packages)) {
+      if(packages[i,5]==0){
+      currentX = car$x
+      currentY = car$y
+      currentH = abs(currentX - packages[i,1]) + abs(currentY - packages[i,2])
+      
+      if(tmpBestH > currentH){
+        tmp = i
+        tmpBestH = currentH
+      }
+      
       #xCoor[i] = packages[i,1]
       #yCoor[i] = packages[i,2]
-      tmp = c(tmp, packages[i,1])
-      tmp = c(tmp, packages[i,2])
+      #tmp = c(tmp, packages[i,1])
+      #tmp = c(tmp, packages[i,2])
+      }
+    }
+    }
+    else {
+      tmp = car$load
     }
     #ourPackages = list(x=xCoor, y=yCoor) 
     #print(tmp)
@@ -18,12 +78,17 @@ SJDM=function(roads,car,packages) {
     
     
     car$mem = tmp
-  }
+  #}
 ########################## First state
   #print(car$mem)
-  px = unlist(car$mem[1])
-  py = unlist(car$mem[2])
-  
+  if(car$load==0){
+  px = unlist(packages[car$mem,1])
+  py = unlist(packages[car$mem,2])
+  }
+  else{
+    px = unlist(packages[car$mem,3])
+    py = unlist(packages[car$mem,4])
+  }
   currentX = car$x
   currentY = car$y
   currentH = abs(currentX - px) + abs(currentY - py)
@@ -37,23 +102,25 @@ SJDM=function(roads,car,packages) {
 
   #print(paste("CurrentNode"))
   #print(current)
-
-  if(car$load > 0){
-    goalNode = list(x = packages[car$load, 3], y=packages[car$load, 4])
-  } else{
-    goalNode = list(x=px, y=py)
-  }
-  print(paste("GoalNode"))
-  print(paste("x1:", goalNode$x, "y1: ", goalNode$y))
-  
+# 
+#   if(car$load > 0){
+#     goalNode = list(x = packages[car$load, 3], y=packages[car$load, 4])
+#   } else{
+#     goalNode = list(x=px, y=py)
+#   }
+  goalNode = list(x=px, y=py)
+#   
+#   print(paste("GoalNode"))
+#   print(paste("x1:", goalNode$x, "y1: ", goalNode$y))
+#   
   ################ get neighbours
   closedlist = AStar(roads,openlist,closedlist,goalNode) 
   
-
-  if(length(closedlist) == 2 && car$load==0){
-    car$mem[1]=NULL
-    car$mem[1]=NULL
-  }
+# 
+#   if(length(closedlist) == 2 && car$load==0){
+#     car$mem[1]=NULL
+#     car$mem[1]=NULL
+#   }
   #Titta igenom closedList
   currentNode = closedlist[[length(closedlist)]]
   closedlist[[length(closedlist)]] = NULL
@@ -116,7 +183,7 @@ getNewNode<-function(current, parent, roads,  goal) {
   currentY = current$y
   difX = currentX - goal$x
   difY = currentY - goal$y
-  currentH = abs(difX) + abs(difY)
+  currentH = 3*(abs(difX) + abs(difY))
   
   difX = currentX - parent$x
   difY = currentY - parent$y
