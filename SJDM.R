@@ -43,6 +43,52 @@ Benchmarking=function(temp, i){
   print(avragePr/runs)
 }
 
+BenchmarkingFast=function(temp, i){
+  start=1
+  runs=i-temp
+  resultVector = matrix(nrow = runs, ncol = 4)
+  result = 0
+  result2 = 0
+  avrageSJ=0
+  avrageBasic=0
+  avrageWins=0
+  avragePr=0
+  dpPlot=F
+  while (temp < i){
+    print(temp)
+    set.seed(temp)
+    result = runDeliveryMan(carReady = SJDM, dim = 10, turns = 2000, pause = 0, del = 5)
+    resultVector[start, 1] = result
+    avrageSJ=avrageSJ+result
+    set.seed(temp)
+    result2 = runDeliveryMan(carReady = basicDM, dim = 10, turns = 2000, pause = 0, del = 5)
+    resultVector[start, 2] = result2
+    avrageBasic=avrageBasic+result2
+    resultVector[start, 3] = result - result2
+    avrageWins=avrageWins+(result - result2)
+    if((result - result2)>0){
+      resultVector[start, 4] = 1
+      avragePr=avragePr+1
+    } else{
+      resultVector[start, 4] = 0
+    }
+    temp = temp + 1 
+    start= start +1
+  }
+  
+  print(resultVector)
+  
+  
+  print("avrage turns for SJ")
+  print(avrageSJ/runs)
+  print("avrage turns for Basic")
+  print(avrageBasic/runs)
+  print("avrage skillnad i turer")
+  print(avrageWins/runs)
+  print("% förluster")
+  print(avragePr/runs)
+}
+
 SJDM=function(roads,car,packages) {
 
   #store coordinates for the green packeges
