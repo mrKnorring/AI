@@ -1,4 +1,5 @@
 Benchmarking=function(temp, i){
+  start=1
   runs=i-temp
   resultVector = matrix(nrow = runs, ncol = 4)
   result = 0
@@ -11,21 +12,22 @@ Benchmarking=function(temp, i){
     print(temp)
     set.seed(temp)
     result = runDeliveryMan(carReady = SJDM, dim = 10, turns = 2000, pause = 0.1, del = 5)
-    resultVector[temp-runs, 1] = result
+    resultVector[start, 1] = result
     avrageSJ=avrageSJ+result
     set.seed(temp)
     result2 = runDeliveryMan(carReady = basicDM, dim = 10, turns = 2000, pause = 0.1, del = 5)
-    resultVector[temp-runs, 2] = result2
+    resultVector[start, 2] = result2
     avrageBasic=avrageBasic+result2
-    resultVector[temp-runs, 3] = result - result2
+    resultVector[start, 3] = result - result2
     avrageWins=avrageWins+(result - result2)
     if((result - result2)>0){
-      resultVector[temp-runs, 4] = 1
+      resultVector[start, 4] = 1
       avragePr=avragePr+1
     } else{
-      resultVector[temp-runs, 4] = 0
+      resultVector[start, 4] = 0
     }
     temp = temp + 1 
+    start= start +1
   }
   
   print(resultVector)
