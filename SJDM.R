@@ -1,6 +1,6 @@
 Benchmarking=function(temp, i){
   runs=i-temp
-  resultVector = matrix(nrow = i, ncol = 4)
+  resultVector = matrix(nrow = runs, ncol = 4)
   result = 0
   result2 = 0
   avrageSJ=0
@@ -8,7 +8,6 @@ Benchmarking=function(temp, i){
   avrageWins=0
   avragePr=0
   while (temp < i){
-    temp = temp + 1 
     print(temp)
     set.seed(temp)
     result = runDeliveryMan(carReady = SJDM, dim = 10, turns = 2000, pause = 0.1, del = 5)
@@ -26,6 +25,7 @@ Benchmarking=function(temp, i){
     } else{
       resultVector[temp-runs, 4] = 0
     }
+    temp = temp + 1 
   }
   
   print(resultVector)
