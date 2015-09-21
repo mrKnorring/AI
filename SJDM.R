@@ -64,6 +64,10 @@ BenchmarkingFast=function(temp, i){
   avrageWins=0
   avragePr=0
   dpPlot=F
+  
+  best=10000000
+  worst=0
+  
   while (temp < i){
     print(temp)
     set.seed(temp)
