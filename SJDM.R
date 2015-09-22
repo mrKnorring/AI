@@ -114,48 +114,30 @@ BenchmarkingFast=function(temp, i){
 SJDM=function(roads,car,packages) {
 
   #store coordinates for the green packeges
-  #if (length(car$mem) == 0) {
-    #xCoor = matrix(nrow = nrow(packages), ncol = 1)
-    #yCoor = matrix(nrow = nrow(packages), ncol = 1)
-    tmp = list()
-    tmpBestH = 1000
-    if(car$load == 0){
+  tmp = list()
+  tmpBestH = 1000
+  if(car$load == 0){
     for (i in 1:nrow(packages)) {
       if(packages[i,5]==0){
-      currentX = car$x
-      currentY = car$y
-      currentH = abs(currentX - packages[i,1]) + abs(currentY - packages[i,2])
-      
-      if(tmpBestH > currentH){
-        tmp = i
-        tmpBestH = currentH
-      }
-      
-      #xCoor[i] = packages[i,1]
-      #yCoor[i] = packages[i,2]
-      #tmp = c(tmp, packages[i,1])
-      #tmp = c(tmp, packages[i,2])
+        currentX = car$x
+        currentY = car$y
+        currentH = abs(currentX - packages[i,1]) + abs(currentY - packages[i,2])
+       
+        if(tmpBestH > currentH){
+          tmp = i
+          tmpBestH = currentH
+        }
       }
     }
-    }
-    else {
-      tmp = car$load
-    }
-    #ourPackages = list(x=xCoor, y=yCoor) 
-    #print(tmp)
-    #print("CONS")
-    #print("x1:", tmp[1]$x, "y1:", tmp[1]$y)
-    
-    
-    car$mem = tmp
-  #}
-########################## First state
-  #print(car$mem)
-  if(car$load==0){
-  px = unlist(packages[car$mem,1])
-  py = unlist(packages[car$mem,2])
+  } else {
+    tmp = car$load
   }
-  else{
+  car$mem = tmp
+
+  if(car$load==0){
+    px = unlist(packages[car$mem,1])
+    py = unlist(packages[car$mem,2])
+  } else{
     px = unlist(packages[car$mem,3])
     py = unlist(packages[car$mem,4])
   }
@@ -170,8 +152,6 @@ SJDM=function(roads,car,packages) {
   closedlist = list()
   openlist[[length(openlist)+1]] <- current
 
-  #print(paste("CurrentNode"))
-  #print(current)
 # 
 #   if(car$load > 0){
 #     goalNode = list(x = packages[car$load, 3], y=packages[car$load, 4])
@@ -186,11 +166,7 @@ SJDM=function(roads,car,packages) {
   ################ get neighbours
   closedlist = AStar(roads,openlist,closedlist,goalNode) 
   
-# 
-#   if(length(closedlist) == 2 && car$load==0){
-#     car$mem[1]=NULL
-#     car$mem[1]=NULL
-#   }
+
   #Titta igenom closedList
   currentNode = closedlist[[length(closedlist)]]
   closedlist[[length(closedlist)]] = NULL
@@ -202,10 +178,6 @@ SJDM=function(roads,car,packages) {
     closedlist[[length(closedlist)]] = NULL
   }
   
-  #print(openlist)
-  #print(packages)
-  #print(roads)
-  #print(car)
 
   # Get witch direction we shall go
 #   bestF = 10000
@@ -222,11 +194,8 @@ SJDM=function(roads,car,packages) {
 #   difX1 = current$x - bestX
 #   difY1 = current$y - bestY
 
-difX1 = current$x - currentNode$x
-difY1 = current$y - currentNode$y
-
-
-  #print(paste("x: ", bestX, "y: ", bestY))
+  difX1 = current$x - currentNode$x
+  difY1 = current$y - currentNode$y
 
   nextMove = 0
   if(difY1 > 0)      {nextMove = 2}
@@ -303,9 +272,7 @@ AStar=function(roads,openlist,closedlist,goalNode) {
   }
   for(i in 1:length(openlist)){
     node = openlist[[i]]
-      #print(node)
       if(node$F == bestF){
-        #print(bestF)
         #add to closedlist
         closedlist[[length(closedlist)+1]] = node
         #set the node with best F value to current 
@@ -330,7 +297,6 @@ AStar=function(roads,openlist,closedlist,goalNode) {
     # goalNode = list(x = px, y=py)
     leftNode = getNewNode(leftNodeCoor, current, roads, goalNode)
     openlist = openlistAdd(openlist, leftNode)
-    # print(paste("leftNode: ", leftNode$F))
   } 
   
   #find top
@@ -341,7 +307,6 @@ AStar=function(roads,openlist,closedlist,goalNode) {
     # goalNode = list(x = px, y=py)
     topNode = getNewNode(topNodeCoor, current, roads, goalNode)
     openlist = openlistAdd(openlist, topNode)
-    # print(paste("topNode: ", topNode$F))
   } 
   
   #find right
@@ -352,7 +317,6 @@ AStar=function(roads,openlist,closedlist,goalNode) {
     # goalNode = list(x = px, y=py)
     rightNode = getNewNode(rightNodeCoor, current, roads, goalNode)
     openlist = openlistAdd(openlist, rightNode)
-    # print(paste("rightNode: ", rightNode$F))
   } 
   
   #find bottom
@@ -363,27 +327,8 @@ AStar=function(roads,openlist,closedlist,goalNode) {
     # goalNode = list(x = px, y=py)
     bottomNode = getNewNode(bottomNodeCoor, current, roads, goalNode)
     openlist = openlistAdd(openlist, bottomNode)
-    # print(paste("bottomNode: ", bottomNode$F))
   }
 
   
   AStar(roads,openlist,closedlist,goalNode)
 }
-
-# if car -> load 0  basfall om bilens kordinater är målkordinater then wait
-#   om grön -> hitta paket (A* alla gröna som inte har en 2a i sista kolumnen)
-#     while gröna punker ej genomsökta (Utför A*) 
-#   om röd -> titta igenom sista kolumnen efter vilken röd punkt vi ska till, sen A* it!!!!
-#     Utför A*
-#       Beräkna H värdet för den nuvarande punkten samt sen beräkna G och F tar sen nästa punkt
-#       Hittar tillbaks genom prefChepestKordinaten till bilen och tar då och flyttar oss till
-#       värdet som länkar till bilens kordinat.
-#
-#
-# ejGenomgåda[int id]
-# genomgåda[int id]
-# [Punkt(
-#       int id,
-#       kordinat(int x,int y),
-#       prevChepestKordinat(int x,int y),
-#       int h, int g, int f)]
