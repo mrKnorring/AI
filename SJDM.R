@@ -77,9 +77,9 @@ BenchmarkingFast=function(temp, i){
     if (result<best){best=result}
     else if(result>worst){worst=result}
     set.seed(temp)
-    result2 = runDeliveryMan(carReady = basicDM, dim = 10, turns = 2000, pause = 0, del = 5)
-    resultVector[start, 2] = result2
-    avrageBasic=avrageBasic+result2
+     result2 = runDeliveryMan(carReady = basicDM, dim = 10, turns = 2000, pause = 0, del = 5)
+     resultVector[start, 2] = result2
+     avrageBasic=avrageBasic+result2
     resultVector[start, 3] = result - result2
     avrageWins=avrageWins+(result - result2)
     if((result - result2)>0){
@@ -222,7 +222,7 @@ getNewNode<-function(current, parent, roads,  goal) {
   currentY = current$y
   difX = currentX - goal$x
   difY = currentY - goal$y
-  currentH = 4*(abs(difX) + abs(difY))
+  currentH = 5*(abs(difX) + abs(difY))
   
   difX = currentX - parent$x
   difY = currentY - parent$y
