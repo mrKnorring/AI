@@ -106,6 +106,8 @@ AStar=function(roads,openlist,closedlist,goalNode) {
 \section{Strategies we made}
 % A discussion of not A* strategies you made us of to improve your performance. Explain why you used these strategies.
 % Kollar vilken grön nod som ligger närmas
+At the moment we are doing a rather simpel check to se what where the nearest package is by checking all green nodes H value and then going towards the one that has the lowest H value. This way of finding the optimal rout is far from perfect but we still think that comparing H values is just about as good as checking witch green node has the best F value, this due to our asumption that the state of the world will get worse over time, and there for the shorter rout we take, the faster out later green packages should take to get on avrage.
+We think that the best way to optemise the order we pick up and diliver packages would be to make a check of how packages pickup and delivery points liey compaired to others, and then try to find the cheepest way to pick up all packeges by simply checking all posible routs to see witch one would be cheepest. This could be done only once if one wants to be time effectiv or bettwean every move if one wants to acount for changes on the borde. Worth noting that acounting for changes will probebly give a better avrage even if it would be a lot less effectiv, the optimal route would probebly be calculated by taking the state of the borde in to acount, but also modefying it a bit, by slight 
 % H värdet är viktigare osv
 
 
