@@ -16,20 +16,31 @@
 \maketitle
 
 \newpage
+\tableofcontents
+
+\newpage
 \section{A theoretical overview of the A* algorithm}
 % A theoretical overview of the A* algorithm, including an explanation of optimality conditions.
-The A* algorithm is a tree or node search, that looks for the cheapest way to get from one place to another.
-Every node has a specific H-value, which is the distance between a start node and the given goal node.
-Every node also has a G-value, which is calculated by adding the total cost of the cheapest way to get to that node from the start node.
-Finally every node has an F-value that is the sum of the G and H value of the node. This value represents how attractive it is to move to this node.
-We also have two lists called open and closed list, where open list contains all nodes that we have calculated the H, G and F values for but that we haven’t analyzed the neighbors of, closed list is where we put the nodes that we have used to calculate the neighbors H, G, F value in.
-Lastly every node keeps track of witch other neighboring node that gives the lowest G value when used to traveling to it in other words what node is its “parent”. 
+The A* algorithm is a tree or node search, that looks for the cheapest way to get from one place to another.\\\\
+
+Every node has a specific H-value, which is the distance between a start node and the given goal node.\\\\
+
+Every node also has a G-value, which is calculated by adding the total cost of the cheapest way to get to that node from the start node.\\\\
+
+Finally every node has an F-value that is the sum of the G and H value of the node. This value represents how attractive it is to move to this node.\\\\
+
+We also have two lists called open and closed list, where open list contains all nodes that we have calculated the H, G and F values for but that we haven’t analyzed the neighbors of, closed list is where we put the nodes that we have used to calculate the neighbors H, G, F value in.\\\\
+
+Lastly every node keeps track of witch other neighboring node that gives the lowest G value when used to traveling to it in other words what node is its “parent”.\\\\ 
+
 We start the algorithm of with calculating all nearby nodes H, G, F, we then check if they are in the open list, if not we put them in and give them all the current node as a “parent”, else we check if their current F value is lower than the F value of the node we are standing on, if it is lower we switch them. All nodes that were not in the open list we put in the open list. After that we look in the open list for witch node has the lowest F value, and then starts over with that value. 
 
 
 \section{Our A*}
 %A discussion of the A* search algorithm you implemented, including a discussion of your heuristic, and whether you used a tree or graph search. Explain why you made the choices you made
-The first thing we do is
+The first thing we do is to search to search in our open list after the node with the best F-value. Mening the lowes value.\\\\
+
+
 
 % Graphical search
 
