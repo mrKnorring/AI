@@ -143,7 +143,7 @@ SJDM=function(roads,car,packages) {
   }
   currentX = car$x
   currentY = car$y
-  currentH = 4*(abs(currentX - px) + abs(currentY - py))
+  currentH = (abs(currentX - px) + abs(currentY - py))
   currentG = 0
   currentF = currentG + currentH
 
@@ -222,7 +222,7 @@ getNewNode<-function(current, parent, roads,  goal) {
   currentY = current$y
   difX = currentX - goal$x
   difY = currentY - goal$y
-  currentH = 5*(abs(difX) + abs(difY))
+  currentH = (abs(difX) + abs(difY))
   
   difX = currentX - parent$x
   difY = currentY - parent$y
@@ -233,16 +233,25 @@ getNewNode<-function(current, parent, roads,  goal) {
   else if(difX < 0) { currentG = roads$hroads[currentY, currentX]}
   else { currentG = 0}
 
-  currentG = currentG + parent$G + 1
+  currentG = currentG + parent$G + 2
   currentF = currentG + currentH
 
   current = list(x = currentX, y = currentY, H = currentH, G = currentG, F = currentF, prevX = parent$x, prevY = parent$y, isCheck = 0)
   return (current)
 }
 
-openlistAdd <- function(openlist, node) {
+openlistAdd <- function(openlist, closedlist, node) {
   bool = 0
   for (elem in openlist) {
+    if(elem$x == node$x && elem$y == node$y){
+      if(node$F < elem$F){
+        elem = node
+      }
+      bool = 1
+      break
+    }
+  }
+  for (elem in closedlist) {
     if(elem$x == node$x && elem$y == node$y){
       if(node$F < elem$F){
         elem = node
@@ -296,7 +305,7 @@ AStar=function(roads,openlist,closedlist,goalNode) {
     leftNodeCoor = list(x = newX, y = current$y)
     # goalNode = list(x = px, y=py)
     leftNode = getNewNode(leftNodeCoor, current, roads, goalNode)
-    openlist = openlistAdd(openlist, leftNode)
+    openlist = openlistAdd(openlist,closedlist, leftNode)
   } 
   
   #find top
@@ -306,7 +315,7 @@ AStar=function(roads,openlist,closedlist,goalNode) {
     topNodeCoor = list(x = current$x, y = newY)
     # goalNode = list(x = px, y=py)
     topNode = getNewNode(topNodeCoor, current, roads, goalNode)
-    openlist = openlistAdd(openlist, topNode)
+    openlist = openlistAdd(openlist,closedlist, topNode)
   } 
   
   #find right
@@ -316,7 +325,7 @@ AStar=function(roads,openlist,closedlist,goalNode) {
     rightNodeCoor = list(x = newX, y = current$y)
     # goalNode = list(x = px, y=py)
     rightNode = getNewNode(rightNodeCoor, current, roads, goalNode)
-    openlist = openlistAdd(openlist, rightNode)
+    openlist = openlistAdd(openlist,closedlist, rightNode)
   } 
   
   #find bottom
@@ -326,7 +335,7 @@ AStar=function(roads,openlist,closedlist,goalNode) {
     bottomNodeCoor = list(x = current$x, y = newY)
     # goalNode = list(x = px, y=py)
     bottomNode = getNewNode(bottomNodeCoor, current, roads, goalNode)
-    openlist = openlistAdd(openlist, bottomNode)
+    openlist = openlistAdd(openlist,closedlist, bottomNode)
   }
 
   
