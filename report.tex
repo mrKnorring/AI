@@ -38,9 +38,11 @@ We start the algorithm of with calculating all nearby nodes H, G, F, we then che
 
 \section{Our A*}
 %A discussion of the A* search algorithm you implemented, including a discussion of your heuristic, and whether you used a tree or graph search. Explain why you made the choices you made
+We have made a function that uses the theory of A * algorithm to update our open and closed list. When it terminates, it return the closed list.\\
 The first thing we do is to search to search in our open list after the node with the best F-value. Mening the lowes value.\\
 Then we search in the open list after the node with the best F-value and remove it from the open list to the cloesed list. And we store it as the last item in the list.\\
-Then we do a check at that 
+Then we do a check at that new node if it is the goal node.If it is we return the closelist. If not we add the neighbors of that node to the open list, asuming that they are not already in the list.\\
+Lastly recursive this procedure, til we found the goal node. 
 
 
 % Graphical search
