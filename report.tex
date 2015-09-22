@@ -42,8 +42,62 @@ We have made a function that uses the theory of A * algorithm to update our open
 The first thing we do is to search to search in our open list after the node with the best F-value. Mening the lowes value.\\
 Then we search in the open list after the node with the best F-value and remove it from the open list to the cloesed list. And we store it as the last item in the list.\\
 Then we do a check at that new node if it is the goal node.If it is we return the closelist. If not we add the neighbors of that node to the open list, asuming that they are not already in the list.\\
-Lastly recursive this procedure, til we found the goal node. 
+Lastly recursive this procedure, til we found the goal node.\\\\
 
+As you can see, we uses a graph search. Becasue we belive that it is the most effective one, depeanding on our situvation. Even though it store more memory, it is better in the longer run.
+
+\begin{lstlisting}[language=R]
+AStar=function(roads,openlist,closedlist,goalNode) {
+  current = list()
+  bestF = 10000
+  for(node in openlist){
+    if(node$F < bestF){
+      bestF = node$F
+    } 
+  }
+  for(i in 1:length(openlist)){
+    node = openlist[[i]]
+      if(node$F == bestF){
+        closedlist[[length(closedlist)+1]] = node
+        current = node
+        openlist[[i]] = NULL
+        break
+      } 
+    }
+  if(closedlist[[length(closedlist)]]$x == goalNode$x && closedlist[[length(closedlist)]]$y == goalNode$y){
+    return(closedlist) 
+  }
+  
+  if(current$x != 1){
+    newX = current$x -1
+    leftNodeCoor = list(x = newX, y = current$y)
+    leftNode = getNewNode(leftNodeCoor, current, roads, goalNode)
+    openlist = openlistAdd(openlist, leftNode)
+  } 
+  
+  if(current$y != nrow(roads$hroads)){
+    newY = current$y + 1
+    topNodeCoor = list(x = current$x, y = newY)
+    topNode = getNewNode(topNodeCoor, current, roads, goalNode)
+    openlist = openlistAdd(openlist, topNode)
+  } 
+  
+  if(current$x != ncol(roads$vroads)){
+    newX = current$x + 1
+    rightNodeCoor = list(x = newX, y = current$y)
+    rightNode = getNewNode(rightNodeCoor, current, roads, goalNode)
+    openlist = openlistAdd(openlist, rightNode)
+  } 
+  if(current$y != 1){
+    newY = current$y -1
+    bottomNodeCoor = list(x = current$x, y = newY)
+    bottomNode = getNewNode(bottomNodeCoor, current, roads, goalNode)
+    openlist = openlistAdd(openlist, bottomNode)
+  }  
+  AStar(roads,openlist,closedlist,goalNode)
+}
+
+\end{lstlisting}
 
 % Graphical search
 
