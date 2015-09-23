@@ -151,70 +151,27 @@ SJDM=function(roads,car,packages) {
   openlist = list()
   closedlist = list()
   openlist[[length(openlist)+1]] <- current
-
-# 
-#   if(car$load > 0){
-#     goalNode = list(x = packages[car$load, 3], y=packages[car$load, 4])
-#   } else{
-#     goalNode = list(x=px, y=py)
-#   }
+  
+  gMod=1.5
+   if(length(which(packages[,5] == 0))==0 && length(which(packages[,5] == 1))==1){
+     gMod=1.2
+   }
   goalNode = list(x=px, y=py)
-#   
-#   print(paste("GoalNode"))
-#   print(paste("x1:", goalNode$x, "y1: ", goalNode$y))
-#   
-  ################ get neighbours
-  tmper = AStar(roads,openlist,closedlist,goalNode) 
+  tmper = AStar(roads,openlist,closedlist,goalNode, gMod) 
   closedlist = tmper$cl
   openlist = tmper$ol
 
-  #Titta igenom closedList
   currentNode = closedlist[[length(closedlist)]]
-#  wayBack2 = matrix(nrow = length(closedlist), ncol = 3)
 
-#  for (i in 1:length(closedlist)) {
-#    wayBack2[i,1] = closedlist[[i]]$x 
-#    wayBack2[i,2] = closedlist[[i]]$y 
-#    wayBack2[i,3] = closedlist[[i]]$F 
-#  }
-#  print(wayBack2)
-  
-#  wayBack3 = matrix(nrow = length(openlist), ncol = 3)
-#  for (i in 1:length(openlist)) {
-#    wayBack3[i,1] = openlist[[i]]$x 
-#    wayBack3[i,2] = openlist[[i]]$y 
-#    wayBack3[i,3] = openlist[[i]]$F 
-#  }
-#  print(wayBack3)
-
-  closedlist[[length(closedlist)]] = NULL
+    closedlist[[length(closedlist)]] = NULL
   while(length(closedlist) > 1){
 
     if(currentNode$prevX == closedlist[[length(closedlist)]]$x && currentNode$prevY == closedlist[[length(closedlist)]]$y){
       currentNode = closedlist[[length(closedlist)]]
-  #    wayBack[index,1] = closedlist[[length(closedlist)]]$x 
-  #    wayBack[index,2] = closedlist[[length(closedlist)]]$y 
-  #    wayBack[index,3] = closedlist[[length(closedlist)]]$F 
-  #    index = index + 1
     } 
     closedlist[[length(closedlist)]] = NULL
   }
   
-
-  # Get witch direction we shall go
-#   bestF = 10000  
-#   bestX = 0
-#   bestY = 0
-#   for (node in openlist) {
-#     if(node$F < bestF){
-#       bestF = node$F
-#       bestX = node$x
-#       bestY = node$y
-#     }
-#   }
-
-#   difX1 = current$x - bestX
-#   difY1 = current$y - bestY
 
   difX1 = current$x - currentNode$x
   difY1 = current$y - currentNode$y
@@ -226,20 +183,12 @@ SJDM=function(roads,car,packages) {
   else if(difX1 < 0) {nextMove = 6}
   else              {nextMove = 5}
   
-#  if (car$load>0) {
-#    print(paste("Current load:",car$load))
-#    print(paste("Destination: X",packages[car$load,3],"Y",packages[car$load,4]))
-#  }  
-#  
-#  car$nextMove=readline("Enter next move. Valid moves are 2,4,6,8,0 (directions as on keypad) or q for quit.")
-#  print(paste("Next move should be: ", nextMove))
-#  car$nextMove=readline("Enter next move: ")
   car$nextMove = nextMove
   if (car$nextMove=="q") {stop("Game terminated on user request.")}
   return (car)
 }
 
-getNewNode<-function(current, parent, roads,  goal) {
+getNewNode<-function(current, parent, roads,  goal, gMod) {
   currentX = current$x
   currentY = current$y
   difX = currentX - goal$x
@@ -255,7 +204,7 @@ getNewNode<-function(current, parent, roads,  goal) {
   else if(difX < 0) { currentG = roads$hroads[currentY, currentX]}
   else { currentG = 0}
 
-  currentG = currentG + parent$G + 2
+  currentG = currentG + parent$G + gMod
   currentF = currentG + currentH
 
   current = list(x = currentX, y = currentY, H = currentH, G = currentG, F = currentF, prevX = parent$x, prevY = parent$y, isCheck = 0)
@@ -272,6 +221,7 @@ openlistAdd <- function(openlist, closedlist, node) {
       bool = 1
       break
     }
+    
   }
   for (elem in closedlist) {
     if(elem$x == node$x && elem$y == node$y){
@@ -291,15 +241,8 @@ openlistAdd <- function(openlist, closedlist, node) {
 
 
 
-AStar=function(roads,openlist,closedlist,goalNode) {
+AStar=function(roads,openlist,closedlist,goalNode, gMod) {
 
-  #gå igenom open list efter minsta F värdet.
-#  print(paste("ol"))
-#  print(openlist)
-#  print(paste("cl"))
-#  print(closedlist)
-#  print(paste("##########################################################"))
-#  print(paste("##########################################################"))
 
   current = list()
   bestF = 10000
@@ -335,7 +278,7 @@ AStar=function(roads,openlist,closedlist,goalNode) {
     # call getNode
     leftNodeCoor = list(x = newX, y = current$y)
     # goalNode = list(x = px, y=py)
-    leftNode = getNewNode(leftNodeCoor, current, roads, goalNode)
+    leftNode = getNewNode(leftNodeCoor, current, roads, goalNode, gMod)
     openlist = openlistAdd(openlist, closedlist, leftNode)
   } 
   
@@ -345,7 +288,7 @@ AStar=function(roads,openlist,closedlist,goalNode) {
     # call getNode
     topNodeCoor = list(x = current$x, y = newY)
     # goalNode = list(x = px, y=py)
-    topNode = getNewNode(topNodeCoor, current, roads, goalNode)
+    topNode = getNewNode(topNodeCoor, current, roads, goalNode, gMod)
     openlist = openlistAdd(openlist, closedlist, topNode)
   } 
   
@@ -355,7 +298,7 @@ AStar=function(roads,openlist,closedlist,goalNode) {
     # call getNode
     rightNodeCoor = list(x = newX, y = current$y)
     # goalNode = list(x = px, y=py)
-    rightNode = getNewNode(rightNodeCoor, current, roads, goalNode)
+    rightNode = getNewNode(rightNodeCoor, current, roads, goalNode, gMod)
     openlist = openlistAdd(openlist, closedlist, rightNode)
   } 
   
@@ -365,10 +308,10 @@ AStar=function(roads,openlist,closedlist,goalNode) {
     # call getNode
     bottomNodeCoor = list(x = current$x, y = newY)
     # goalNode = list(x = px, y=py)
-    bottomNode = getNewNode(bottomNodeCoor, current, roads, goalNode)
+    bottomNode = getNewNode(bottomNodeCoor, current, roads, goalNode, gMod)
     openlist = openlistAdd(openlist, closedlist, bottomNode)
   }
 
   
-  AStar(roads,openlist,closedlist,goalNode)
+  AStar(roads,openlist,closedlist,goalNode, gMod)
 }
