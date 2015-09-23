@@ -64,7 +64,8 @@ AStar=function(roads,openlist,closedlist,goalNode) {
         break
       } 
     }
-  if(closedlist[[length(closedlist)]]$x == goalNode$x && closedlist[[length(closedlist)]]$y == goalNode$y){
+  if(closedlist[[length(closedlist)]]$x == goalNode$x && 
+    closedlist[[length(closedlist)]]$y == goalNode$y){
     return(closedlist) 
   }
   
